@@ -104,7 +104,8 @@ public struct Year: CustomStringConvertible, Equatable {
 // MARK: - Month
 
 /// Defines months in a year
-public enum Month: Int, CustomStringConvertible, Equatable {
+///
+public enum Month: Int, CaseIterable, CustomStringConvertible, Equatable {
 	case january = 0, february, march, april, may, june, july, august, september, october, november, december
 
 	public var description: String {
