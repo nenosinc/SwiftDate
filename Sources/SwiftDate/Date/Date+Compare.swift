@@ -181,6 +181,13 @@ extension Date {
             return dateComponents.nanosecond
         case .calendar, .timeZone:
             return nil
+        case .isLeapMonth:
+            guard let providedYear = dateComponents.year,
+                  let providedMonth = dateComponents.month
+            else { return 0 }
+            let isLeapYear = Year(providedYear).isLeap()
+            let isFebruary = Month(rawValue: providedMonth) == .february
+            return isLeapYear && isFebruary ? 1 : 0
         @unknown default:
             assert(false, "unknown date component")
         }
