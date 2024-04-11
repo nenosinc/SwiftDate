@@ -73,7 +73,7 @@ public extension DateInRegion {
 	}
 
 	/// Return elapsed time expressed in given components since the current receiver and a reference date.
-	/// Time is evaluated with the fixed measumerent of each unity.
+	/// Time is evaluated with the fixed measurement of each unit.
 	///
 	/// - Parameters:
 	///   - refDate: reference date (`nil` to use current date in the same region of the receiver)

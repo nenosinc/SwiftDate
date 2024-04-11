@@ -46,13 +46,14 @@ public func - (lhs: DateInRegion, rhs: [Calendar.Component: Int]) -> DateInRegio
 
 extension DateInRegion {
 
-	/// Return a `DateComponent` object from a given set of `Calendar.Component` object with associated values and a specific region
+	/// Return a `DateComponents` object from a given set of `Calendar.Component` object with associated values and a specific region
 	///
 	/// - parameter values:    calendar components to set (with their values)
 	/// - parameter multipler: optional multipler (by default is nil; to make an inverse component value it should be multipled by -1)
 	/// - parameter region:    optional region to set
 	///
 	/// - returns: a `DateComponents` object
+    ///
 	internal static func componentsFrom(values: [Calendar.Component: Int], multipler: Int? = nil, setRegion region: Region? = nil) -> DateComponents {
 		var cmps = DateComponents()
 		if region != nil {
@@ -69,13 +70,14 @@ extension DateInRegion {
 	}
 
 	/// Adds a time interval to this date.
-	/// WARNING:
-	/// This only adjusts an absolute value. If you wish to add calendrical concepts like hours,
-	/// days, months then you must use a Calendar.
-	/// That will take into account complexities like daylight saving time,
-	/// months with different numbers of days, and more.
+    ///
+    /// - warning: This only adjusts an absolute value. If you wish to add
+    /// calendrical concepts like hours, days, or months then you must use a `Calendar`.
+    /// That will take into account complexities like daylight saving time, months with
+    /// different numbers of days, and more.
 	///
-	/// - Parameter timeInterval: The value to add, in seconds.
+	/// - parameter timeInterval: The value to add, in seconds.
+    ///
 	public mutating func addTimeInterval(_ timeInterval: TimeInterval) {
 		date.addTimeInterval(timeInterval)
 	}

@@ -14,7 +14,8 @@ import Foundation
 
 // MARK: - Weekday
 
-/// This define the weekdays for some functions.
+/// This defines weekdays for some functions.
+///
 public enum WeekDay: Int {
 	case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
 
@@ -23,6 +24,7 @@ public enum WeekDay: Int {
 	///
 	/// - Parameter locale: locale of the output, omit to use the `defaultRegion`'s locale.
 	/// - Returns: display name
+    ///
 	public func name(style: SymbolFormatStyle = .`default`, locale: LocaleConvertible = SwiftDate.defaultRegion.locale) -> String {
 		let region = Region(calendar: SwiftDate.defaultRegion.calendar, zone: SwiftDate.defaultRegion.timeZone, locale: locale)
 		let formatter = DateFormatter.sharedFormatter(forRegion: region, format: nil)
@@ -42,6 +44,7 @@ public enum WeekDay: Int {
 	///
 	/// - Parameter months: number of months to add
 	/// - Returns: new month.
+    ///
 	public func add(days: Int) -> WeekDay {
 		let normalized = days % 7
 		return WeekDay(rawValue: ((self.rawValue + normalized + 7 - 1) % 7) + 1)!
@@ -51,6 +54,7 @@ public enum WeekDay: Int {
 	///
 	/// - Parameter months: number of days to subtract. May be negative, in which case it will be added
 	/// - Returns: new weekday.
+    ///
 	public func subtract(days: Int) -> WeekDay {
 		return add(days: -(days % 7))
 	}
@@ -59,7 +63,12 @@ public enum WeekDay: Int {
 
 // MARK: - Year
 
+/// Defines years for some functions.
+///
+/// Includes leap year calculations and total number of days in a given year.
+///
 public struct Year: CustomStringConvertible, Equatable {
+    
 	let year: Int
 
 	public var description: String {
@@ -69,6 +78,7 @@ public struct Year: CustomStringConvertible, Equatable {
 	/// Constructs a `Year` from the passed value.
 	///
 	/// - Parameter year: year value. Can be negative.
+    ///
 	public init(_ year: Int) {
 		self.year = year
 	}
@@ -76,6 +86,7 @@ public struct Year: CustomStringConvertible, Equatable {
 	/// Returns whether this year is a leap year
 	///
 	/// - Returns: A boolean indicating whether this year is a leap year
+    ///
 	public func isLeap() -> Bool {
 		return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0)
 	}
@@ -83,6 +94,7 @@ public struct Year: CustomStringConvertible, Equatable {
 	/// Returns the number of days in this year
 	///
 	/// - Returns: The number of days in this year
+    ///
 	public func numberOfDays() -> Int {
 		return self.isLeap() ? 366 : 365
 	}
@@ -104,6 +116,7 @@ public enum Month: Int, CustomStringConvertible, Equatable {
 	///
 	/// - Parameter locale: locale of the output, omit to use the `defaultRegion`'s locale.
 	/// - Returns: display name
+    ///
 	public func name(style: SymbolFormatStyle = .`default`, locale: LocaleConvertible = SwiftDate.defaultRegion.locale) -> String {
 		let region = Region(calendar: SwiftDate.defaultRegion.calendar, zone: SwiftDate.defaultRegion.timeZone, locale: locale)
 		let formatter = DateFormatter.sharedFormatter(forRegion: region, format: nil)
@@ -121,6 +134,7 @@ public enum Month: Int, CustomStringConvertible, Equatable {
 	///
 	/// - Parameter months: number of months to add
 	/// - Returns: new month.
+    ///
 	public func add(months: Int) -> Month {
 		let normalized = months % 12
 		return Month(rawValue: (self.rawValue + normalized + 12) % 12)!
@@ -130,14 +144,16 @@ public enum Month: Int, CustomStringConvertible, Equatable {
 	///
 	/// - Parameter months: number of months to subtract. May be negative, in which case it will be added
 	/// - Returns: new month.
+    ///
 	public func subtract(months: Int) -> Month {
 		return add(months: -(months % 12))
 	}
 
-	/// Returns the number of days in a this month for a given year
+	/// Returns the number of days in this month for a given year
 	///
 	/// - Parameter year: reference year.
 	/// - Returns: The number of days in this month.
+    ///
 	public func numberOfDays(year: Int) -> Int {
 		switch self {
 		case .february:
@@ -148,5 +164,5 @@ public enum Month: Int, CustomStringConvertible, Equatable {
 			return 31
 		}
 	}
-
+    
 }

@@ -12,8 +12,10 @@
 
 import Foundation
 
-/// Region define a context both for `Date` and `DateInRegion`.
-/// Each `Date` is assigned to the currently set `SwiftDate.default
+/// Region defines a context both for `Date` and `DateInRegion`.
+///
+/// Each `Date` is assigned to the currently set `SwiftDate.default`.
+///
 public struct Region: Decodable, Encodable, Equatable, Hashable, CustomStringConvertible {
 
 	// MARK: - Properties
@@ -80,7 +82,7 @@ public struct Region: Decodable, Encodable, Equatable, Hashable, CustomStringCon
 					  locale: Locale.autoupdatingCurrent)
 	}
 
-	/// ISO Region is defined by the gregorian calendar, gmt timezone and english posix locale
+	/// ISO Region is defined by the Gregorian calendar, GMT timezone and english posix locale
 	public static var ISO: Region {
 		return Region(calendar: Calendars.gregorian.toCalendar(),
 					  zone: Zones.gmt.toTimezone(),
@@ -145,7 +147,7 @@ public struct Region: Decodable, Encodable, Equatable, Hashable, CustomStringCon
 
 	public static func == (lhs: Region, rhs: Region) -> Bool {
 		// Note: equality does not consider other parameters than the identifier of the major
-		// attributes (calendar, timezone and locale). Deeper comparisor must be made directly
+		// attributes (calendar, timezone and locale). Deeper comparison must be made directly
 		// between Calendar (it may fail when you encode/decode autoUpdating calendars).
 		return
 			(lhs.calendar.identifier == rhs.calendar.identifier) &&

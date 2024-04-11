@@ -108,9 +108,12 @@ public enum SymbolFormatStyle {
 }
 
 /// Encapsulate the logic to use date format strings
+///
 public struct DateFormats {
 
-	/// This is the built-in list of all supported formats for auto-parsing of a string to a date.
+    /// This is the built-in list of all supported formats for auto-parsing of a
+    /// string to a date.
+    ///
 	internal static let builtInAutoFormat: [String] =  [
 		DateFormats.iso8601,
 		"yyyy'-'MM'-'dd'T'HH':'mm':'ssZ",
@@ -139,33 +142,42 @@ public struct DateFormats {
 		"HH"
 	]
 
-	/// This is the ordered list of all formats SwiftDate can use in order to attempt parsing a passaed
-	/// date expressed as string. Evaluation is made in order; you can add or remove new formats as you wish.
-	/// In order to reset the list call `resetAutoFormats()` function.
+    /// This is the ordered list of all formats SwiftDate can use in order to attempt
+    /// parsing a passed date expressed as string. Evaluation is made in order; you can
+    /// add or remove new formats as you wish. In order to reset the list call
+    /// ``resetAutoFormats()`` function.
+    ///
 	public static var autoFormats: [String] = DateFormats.builtInAutoFormat
 
 	/// Default ISO8601 format string
+    ///
 	public static let iso8601: String = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
 
 	/// Extended format
+    ///
 	public static let extended: String = "eee dd-MMM-yyyy GG HH:mm:ss.SSS zzz"
 
 	/// The Alternative RSS formatted date "d MMM yyyy HH:mm:ss ZZZ" i.e. "09 Sep 2011 15:26:08 +0200"
+    ///
 	public static let altRSS: String = "d MMM yyyy HH:mm:ss ZZZ"
 
 	/// The RSS formatted date "EEE, d MMM yyyy HH:mm:ss ZZZ" i.e. "Fri, 09 Sep 2011 15:26:08 +0200"
+    ///
 	public static let rss: String = "EEE, d MMM yyyy HH:mm:ss ZZZ"
 
 	/// The http header formatted date "EEE, dd MMM yyyy HH:mm:ss zzz" i.e. "Tue, 15 Nov 1994 12:45:26 GMT"
+    ///
 	public static let httpHeader: String = "EEE, dd MMM yyyy HH:mm:ss zzz"
 
 	/// A generic standard format date i.e. "EEE MMM dd HH:mm:ss Z yyyy"
+    ///
 	public static let standard: String = "EEE MMM dd HH:mm:ss Z yyyy"
 
 	/// SQL date format
 	public static let sql: String = "yyyy-MM-dd'T'HH:mm:ss.SSSX"
 
 	/// Reset the list of auto formats to the initial settings.
+    ///
 	public static func resetAutoFormats() {
 		autoFormats = DateFormats.builtInAutoFormat
 	}
@@ -178,6 +190,7 @@ public struct DateFormats {
 	///   - suggestedFormat: optional format of the date expressed by the string (set it if you can in order to optimize the parse task).
 	///   - region: region in which the date is expressed.
 	/// - Returns: parsed absolute `Date`, `nil` if parse fails.
+    ///
 	public static func parse(string: String, format: String?, region: Region) -> Date? {
 		let formats = (format != nil ? [format!] : DateFormats.autoFormats)
 		return DateFormats.parse(string: string, formats: formats, region: region)
@@ -227,6 +240,7 @@ public extension Calendar.Component {
 		case .nanosecond: return NSCalendar.Unit.nanosecond
 		case .calendar: return NSCalendar.Unit.calendar
 		case .timeZone: return NSCalendar.Unit.timeZone
+        case .isLeapMonth: return NSCalendar.Unit.month
 		@unknown default:
 			fatalError("Unsupported type \(self)")
 		}
@@ -234,7 +248,9 @@ public extension Calendar.Component {
 }
 
 /// Rounding mode for dates.
+///
 /// Round off/up (ceil) or down (floor) target date.
+///
 public enum RoundDateMode {
 	case to5Mins
 	case to10Mins
@@ -243,6 +259,7 @@ public enum RoundDateMode {
 	case toCeil5Mins
 	case toCeil10Mins
 	case toCeil30Mins
+    /// mins must be >= 1
 	case toCeilMins(_: Int)
 	case toFloor5Mins
 	case toFloor10Mins
@@ -250,7 +267,8 @@ public enum RoundDateMode {
 	case toFloorMins(_: Int)
 }
 
-/// Related type enum to get derivated date from a receiver date.
+/// Related type enum to get derived date from a receiver date.
+///
 public enum DateRelatedType {
 	case startOfDay
 	case endOfDay
@@ -278,18 +296,23 @@ public enum DateRelatedType {
 public struct TimeCalculationOptions {
 
 	/// Specifies the technique the search algorithm uses to find result
+    ///
 	public var matchingPolicy: Calendar.MatchingPolicy
 
 	/// Specifies the behavior when multiple matches are found
+    ///
 	public var repeatedTimePolicy: Calendar.RepeatedTimePolicy
 
 	/// Specifies the direction in time to search
+    ///
 	public var direction: Calendar.SearchDirection
-
-	public init(matching: Calendar.MatchingPolicy = .nextTime,
-				timePolicy: Calendar.RepeatedTimePolicy = .first,
-				direction: Calendar.SearchDirection = .forward) {
-		self.matchingPolicy = matching
+    
+    public init(
+        matching: Calendar.MatchingPolicy = .nextTime,
+        timePolicy: Calendar.RepeatedTimePolicy = .first,
+        direction: Calendar.SearchDirection = .forward
+    ) {
+        self.matchingPolicy = matching
 		self.repeatedTimePolicy = timePolicy
 		self.direction = direction
 	}
@@ -316,6 +339,7 @@ extension Foundation.Bundle {
     
     /// Returns the resource bundle associated with the current Swift module.
     /// This is used instead of `module` to allows compatibility outside the SwiftPM environment (ie. CocoaPods).
+    ///
     static var appModule: Bundle? = {
         let bundleName = "SwiftDate_SwiftDate"
 
