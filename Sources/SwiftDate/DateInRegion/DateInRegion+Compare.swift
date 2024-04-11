@@ -36,76 +36,115 @@ public func > (lhs: DateInRegion, rhs: DateInRegion) -> Bool {
     lhs.date.compare(rhs.date) == .orderedDescending
 }
 
-// The type of comparison to do against today's date or with the suplied date.
+/// The type of comparison to do against today's date or with the supplied date.
 ///
-/// - isToday: hecks if date today.
-/// - isTomorrow: Checks if date is tomorrow.
-/// - isYesterday: Checks if date is yesterday.
-/// - isSameDay: Compares date days
-/// - isThisWeek: Checks if date is in this week.
-/// - isNextWeek: Checks if date is in next week.
-/// - isLastWeek: Checks if date is in last week.
-/// - isSameWeek: Compares date weeks
-/// - isThisMonth: Checks if date is in this month.
-/// - isNextMonth: Checks if date is in next month.
-/// - isLastMonth: Checks if date is in last month.
-/// - isSameMonth: Compares date months
-/// - isThisYear: Checks if date is in this year.
-/// - isNextYear: Checks if date is in next year.
-/// - isLastYear: Checks if date is in last year.
-/// - isSameYear: Compare date years
-/// - isInTheFuture: Checks if it's a future date
-/// - isInThePast: Checks if the date has passed
-/// - isEarlier: Checks if earlier than date
-/// - isLater: Checks if later than date
-/// - isWeekday: Checks if it's a weekday
-/// - isWeekend: Checks if it's a weekend
-/// - isInDST: Indicates whether the represented date uses daylight saving time.
-/// - isMorning: Return true if date is in the morning (>=5 - <12)
-/// - isAfternoon: Return true if date is in the afternoon (>=12 - <17)
-/// - isEvening: Return true if date is in the morning (>=17 - <21)
-/// - isNight: Return true if date is in the morning (>=21 - <5)
 public enum DateComparisonType {
 
-	// Days
+	// MARK: Days
+    
+    /// Checks if date is today.
 	case isToday
+    
+    /// Checks if date is tomorrow.
 	case isTomorrow
+    
+    /// Checks if date is yesterday.
 	case isYesterday
+    
+    /// Checks if date is within the past 24 hours.
+    case isInPastDay
+    
+    /// Compares date days.
 	case isSameDay(_ : DateRepresentable)
 
-	// Weeks
+	// MARK: Weeks
+    
+    /// Checks if date is in this week.
 	case isThisWeek
+    
+    /// Checks if date is in next week.
 	case isNextWeek
+    
+    /// Checks if date is in last week.
 	case isLastWeek
+    
+    /// Checks if date is within the past 7 days.
+    case isInPastWeek
+    
+    /// Compares date weeks.
 	case isSameWeek(_: DateRepresentable)
 
-	// Months
+	// MARK: Months
+    
+    /// Checks if date is in this month.
 	case isThisMonth
+    
+    /// Checks if date is in next month.
 	case isNextMonth
+    
+    /// Checks if date is in last month.
 	case isLastMonth
+    
+    /// Checks if date is within the past 30 days.
+    case isInPastMonth
+    
+    /// Compares date months.
 	case isSameMonth(_: DateRepresentable)
 
-	// Years
+	// MARK: Years
+    
+    /// Checks if date is in this year.
 	case isThisYear
+    
+    /// Checks if date is in next year.
 	case isNextYear
+    
+    /// Checks if date is in last year.
 	case isLastYear
+    
+    /// Checks if date is within the past 365 days.
+    case isInPastYear
+    
+    /// Compare date years.
 	case isSameYear(_: DateRepresentable)
 
-	// Relative Time
+	// MARK: Relative Time
+    
+    /// Checks if it's a future date
 	case isInTheFuture
+    
+    /// Checks if the date has passed
 	case isInThePast
+    
+    /// Checks if earlier than date
 	case isEarlier(than: DateRepresentable)
+    
+    /// Checks if later than date
 	case isLater(than: DateRepresentable)
+    
+    /// Checks if it's a weekday
 	case isWeekday
+    
+    /// Checks if it's a weekend
 	case isWeekend
 
-	// Day time
+	// MARK: Day Time
+    
+    /// Return true if date is in the morning (>=5 - <12)
 	case isMorning
+    
+    /// Return true if date is in the afternoon (>=12 - <17)
 	case isAfternoon
+    
+    /// Return true if date is in the evening (>=17 - <21)
 	case isEvening
+    
+    /// Return true if date is at night (>=21 - <5)
 	case isNight
 
-	// TZ
+	// MARK: Time Zone
+    
+    /// Indicates whether the represented date uses daylight saving time.
 	case isInDST
 }
 
@@ -126,7 +165,7 @@ public extension DateInRegion {
 	/// Compare the date with the rule specified in the `compareType` parameter.
 	///
 	/// - Parameter compareType: comparison type.
-	/// - Returns: `true` if comparison succeded, `false` otherwise
+	/// - Returns: `true` if comparison succeeded, `false` otherwise
 	func compare(_ compareType: DateComparisonType) -> Bool {
 		switch compareType {
 		case .isToday:
@@ -140,6 +179,11 @@ public extension DateInRegion {
 			let yesterday = DateInRegion(region: region).dateByAdding(-1, .day)
 			return compare(.isSameDay(yesterday))
 
+        case .isInPastDay:
+            let now = region.nowInThisRegion()
+            let pastDay = now.dateByAdding(-24, .hour)
+            return compare(.isEarlier(than: now)) && compare(.isLater(than: pastDay))
+            
 		case .isSameDay(let refDate):
 			return calendar.isDate(date, inSameDayAs: refDate.date)
 
@@ -154,6 +198,11 @@ public extension DateInRegion {
 			let lastWeek = region.nowInThisRegion().dateByAdding(-1, .weekOfYear)
 			return compare(.isSameWeek(lastWeek))
 
+        case .isInPastWeek:
+            let now = region.nowInThisRegion()
+            let pastWeek = now.dateByAdding(-7, .day)
+            return compare(.isEarlier(than: now)) && compare(.isLater(than: pastWeek))
+            
 		case .isSameWeek(let refDate):
 			guard weekOfYear == refDate.weekOfYear else {
 				return false
@@ -171,6 +220,11 @@ public extension DateInRegion {
 		case .isLastMonth:
 			let lastMonth = region.nowInThisRegion().dateByAdding(-1, .month)
 			return compare(.isSameMonth(lastMonth))
+            
+        case .isInPastMonth:
+            let now = region.nowInThisRegion()
+            let pastMonth = now.dateByAdding(-30, .day)
+            return compare(.isEarlier(than: now)) && compare(.isLater(than: pastMonth))
 
 		case .isSameMonth(let refDate):
 			return (year == refDate.year) && (month == refDate.month)
@@ -185,6 +239,11 @@ public extension DateInRegion {
 		case .isLastYear:
 			let lastYear = region.nowInThisRegion().dateByAdding(-1, .year)
 			return compare(.isSameYear(lastYear))
+
+        case .isInPastYear:
+            let now = region.nowInThisRegion()
+            let pastYear = now.dateByAdding(-365, .day)
+            return compare(.isEarlier(than: now)) && compare(.isLater(than: pastYear))
 
 		case .isSameYear(let refDate):
 			return (year == refDate.year)
@@ -226,7 +285,7 @@ public extension DateInRegion {
 		}
 	}
 
-	/// Returns a ComparisonResult value that indicates the ordering of two given dates based on
+	/// Returns a `ComparisonResult` value that indicates the ordering of two given dates based on
 	/// their components down to a given unit granularity.
 	///
 	/// - parameter date:        date to compare.
@@ -329,14 +388,16 @@ public extension DateInRegion {
 	}
 
     /// Returns the difference in the calendar component given (like day, month or year)
-    /// with respect to the other date as a positive integer
+    /// with respect to the other date as a positive integer.
+    ///
     func difference(in component: Calendar.Component, from other: DateInRegion) -> Int? {
         self.date.difference(in: component, from: other.date)
     }
 
     /// Returns the differences in the calendar components given (like day, month and year)
     /// with respect to the other date as dictionary with the calendar component as the key
-    /// and the diffrence as a positive integer as the value
+    /// and the difference as a positive integer as the value.
+    ///
     func differences(in components: Set<Calendar.Component>, from other: DateInRegion) -> [Calendar.Component: Int] {
         self.date.differences(in: components, from: other.date)
     }
